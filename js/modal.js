@@ -28,14 +28,15 @@ modalTrigger.forEach( btn =>{
         }
         document.addEventListener('keydown', (e) =>{
 
-            if (e.key == "Escape"){
+            if (e.key === "Escape"){
                 closerPopUp();
             }
         });
 
     function scrollOpenPopUp(){
 
-        if (window.scrollY + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+        if (window.scrollY + document.documentElement.clientHeight >= 
+            document.documentElement.scrollHeight) {
             openPopUp();
             window.removeEventListener('scroll', scrollOpenPopUp);
         }

@@ -49,9 +49,19 @@ document.addEventListener('DOMContentLoaded', ()=>{
 	};
 
 	forms.forEach(item => {
-		postData(item);
+		bindPostData(item);
 	});
-	function postData(form) {
+	const postData = async (url,data) => {
+		const info = await fetch( url , {
+			method: "POST",
+			headers : {
+				'Content-type':'application/json'
+			},
+			body : data
+		})
+		return await info.json()
+	}
+	function bindPostData(form) {
 		form.addEventListener('submit', (e) => {
 			e.preventDefault();
 
@@ -69,18 +79,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
 			formData.forEach(function(value, key){
 				object[key] = value;
 			});
-
-			fetch('server.php', {
-				method: "POST",
-				headers : {
-					'Content-type':'application/json'
-				},
-				body : JSON.stringify(object)
-			}).then(data => data.text()
-			).then(data => {
+			postData('http://localhost:3000/requests' , JSON.stringify(object))
+			.then(data => {
 				swodModalPost(message.success);
 				statusMessage.remove();
-			}).catch(()=>{
+			}).catch(()=> {
 				swodModalPost(message.failure);
 			}).finally(()=> {
 				form.reset();

@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', ()=>{
 	const modalTrigger = document.querySelectorAll("[data-modal]"),
-		  modal = document.querySelector(".modal"),
-		  modalTimerId = setTimeout(openPopUp, 3000000);
+		modal = document.querySelector(".modal"),
+		modalTimerId = setTimeout(openPopUp, 3000000);
 	function openPopUp() {
 		modal.classList.add("show");
 		modal.classList.remove("hide");
@@ -63,38 +63,36 @@ document.addEventListener('DOMContentLoaded', ()=>{
 			`;
 			form.insertAdjacentElement('afterend', statusMessage);
 		
-			const request = new XMLHttpRequest();
-			request.open('POST', 'server.php');
-			request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
 			const formData = new FormData(form);
 
 			const object = {};
 			formData.forEach(function(value, key){
 				object[key] = value;
 			});
-			const json = JSON.stringify(object);
 
-			request.send(json);
-
-
-			request.addEventListener('load', () => {
-				if (request.status === 200) {
-					swodModalPost(message.success);
-					statusMessage.remove();
-					form.reset();
-				} else {
-					console.log(request.failure);
-					swodModalPost(message.failure);
-				}
-			});
+			fetch('server.php', {
+				method: "POST",
+				headers : {
+					'Content-type':'application/json'
+				},
+				body : JSON.stringify(object)
+			}).then(data => data.text()
+			).then(data => {
+				swodModalPost(message.success);
+				statusMessage.remove();
+			}).catch(()=>{
+				swodModalPost(message.failure);
+			}).finally(()=> {
+				form.reset();
+			})
 		});
 	}
 
 
 
 	function swodModalPost(massage){
-		const prevMiodalDialog = document.querySelector('.modal__dialog');
 
+		const prevMiodalDialog = document.querySelector('.modal__dialog');
 		prevMiodalDialog.classList.add('hide');
 		openPopUp();
 
@@ -106,9 +104,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 				<div class = "modal__title">${massage}</div>
 			</div>
 		`;
-		console.log(createNewModal)
 		document.querySelector('.modal').append(createNewModal);
-		console.log(document.querySelector('.modal'))
 		setTimeout(()=>{
 			createNewModal.remove();
 			prevMiodalDialog.classList.add('show');

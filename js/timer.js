@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', ()=>{
 // тут в нужно оказать дату отсчета
-const deadline = "2023-07-12";
+const deadline = "2023-07-21";
 
  function getTimeRemaining(endTime){
    
